@@ -24,14 +24,14 @@ entity datapath is
 	--counter control signal
 	inc_en: in std_logic;
 	i_rst: in std_logic;
-	N: in std_logic_vector(3 downto 0);	--stop = N (=15)
-	complete_tick: out std_logic;
+	N: in std_logic_vector(4 downto 0);	--stop = N (=15)
+	loop_done: out std_logic;
 	
 	--memory signal
 	mem_read_data: in signed(15 downto 0);
-	--LUT_addr: out std_logic_vector
+	LUT_addr: out std_logic_vector(4 downto 0);
 
-	result: out signed(15 downto 0)
+	result_o: out signed(15 downto 0)
 	);
 
 end datapath;
@@ -46,19 +46,22 @@ architecture rtl of datapath is
 	signal X_add_Y: signed(15 downto 0);		--signal for result
 
 	signal X, Y, Z: signed(15 downto 0);	
-	signal temp_count: std_logic_vector(3 downto 0);
+	signal temp_count: std_logic_vector(4 downto 0);
 	signal Xshift, Yshift: signed(15 downto 0);
 	
 	signal LUTval: signed(15 downto 0);
 	
-	signal i_cnt: std_logic_vector(3 downto 0);
+	signal i_cnt: std_logic_vector(4 downto 0);
+
+	constant X0: signed(15 downto 0) := to_signed(9872, 16); 	-- = x2690 = 1,2051
+	constant Y0: signed(15 downto 0) := to_signed(0,16); 		-- = x0000 = 0
 begin
 
 	-- 2x1 Multiplexer for X
-	x_src <= x"FFFF" when x_sel = '1' else x_next;
+	x_src <= X0 when x_sel = '1' else x_next;
 
 	-- 2x1 Multiplexer for Y
-	y_src <= x"0000" when y_sel = '1' else y_next;
+	y_src <= Y0 when y_sel = '1' else y_next;
 	
 	-- 2x1 Multiplexer for Z
 	z_src <= t_in when z_sel = '1' else z_next;
@@ -96,6 +99,9 @@ begin
 	-- Z - LUT
 	Z_sub_LUTval <= (Z - LUTval);	
 
+	-- X + Y
+	X_add_Y <= (X + Y);
+
 	--Register X
 	reg_X: reg
 	port map(clk, rst, x_ld, x_src, X);
@@ -126,11 +132,14 @@ begin
 	
 	--Register Result
 	reg_Result: reg
-	port map(clk, rst, result_ld, X_add_Y, result);
+	port map(clk, rst, result_ld, X_add_Y, result_o);
 
 	-- Up counter for i
 	up_counter_i: up_counter
-	port map(clk, rst, inc_en, N, complete_tick, i_cnt);
+	port map(clk, i_rst, inc_en, N, loop_done, i_cnt);
+
+	-- connect count to LUT_addr
+	LUT_addr <= i_cnt;
 
 	--X shift
 	--Xshift <= (X >> i_cnt);

@@ -6,17 +6,17 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity up_counter is
 	port(
 	clk, rst: in std_logic;
-	inc_en: in std_logic;	--enable
-	stop: in  std_logic_vector(3 downto 0);		--value dich
-	complete_tick: out std_logic;	--flag da dat stop
-	count: out std_logic_vector(3 downto 0)		--gia tri hien tai cua counter
+	inc_en: in std_logic;	--enable increase
+	stop: in  std_logic_vector(4 downto 0);		--target value
+	loop_done: out std_logic;	
+	count: out std_logic_vector(4 downto 0)		--gia tri hien tai cua counter
 	);
 end up_counter;
 
 architecture behav of up_counter is
-	constant start: std_logic_vector(3 downto 0) := "0001"; 	--initial i = 1
-	signal temp_counter: std_logic_vector(3 downto 0) := start;
-	signal one: std_logic_vector(3 downto 0) := "0001";
+	constant start: std_logic_vector(4 downto 0) := "00001"; 	--initial i = 1
+	signal temp_counter: std_logic_vector(4 downto 0) := start;
+	signal one: std_logic_vector(4 downto 0) := "00001";
 begin
 	process(clk)
 	begin
@@ -29,7 +29,7 @@ begin
 		end if;
 	end process;
 	
-	complete_tick <= '1' when temp_counter = stop else '0';
+	loop_done <= '1' when temp_counter > stop else '0';
 	count <= temp_counter;
 
 end behav;
