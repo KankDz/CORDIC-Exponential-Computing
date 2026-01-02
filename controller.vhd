@@ -109,7 +109,7 @@ begin
 	result_ld <= '1' when state = S11 else '0';
 
 	-- counter control signal
-	i_rst <= '1' when (state = S0 or state = S2) else '0';
+	i_rst <= '1' when (state = S2) else '0';
 	inc_en <= '1' when state = S10 else '0';
 	
 
