@@ -26,25 +26,35 @@ architecture rtl of ExpApprox is
 	signal x_next_ld, y_next_ld, z_next_ld: std_logic;
 	signal LUT_ld, result_ld: std_logic;
 	signal inc_en: std_logic;
-	signal complete_tick: std_logic;
+	signal loop_done: std_logic;
 	signal i_rst: std_logic;
 	signal z_ge_0: std_logic;
 begin
 	control_unit: controller
 	port map(
-	clk, rst,
-	start_i,
-	x_sel, y_sel, z_sel,
-	x_next_sel, y_next_sel, z_next_sel,
-	x_ld, y_ld, z_ld,
-	x_next_ld, y_next_ld, z_next_ld,
-	LUT_ld, result_ld,
-	inc_en,
-	complete_tick,
-	i_rst,
-	z_ge_0,	
-	mem_read_en,
-	done_o
+	clk => clk,
+	rst => rst,
+	start_i => start_i,
+	x_sel => x_sel, 
+	y_sel => y_sel, 
+	z_sel => z_sel,
+	x_next_sel => x_next_sel, 
+	y_next_sel => y_next_sel, 
+	z_next_sel => z_next_sel,
+	x_ld => x_ld, 
+	y_ld => y_ld, 
+	z_ld => z_ld,
+	x_next_ld => x_next_ld, 
+	y_next_ld => y_next_ld, 
+	z_next_ld => z_next_ld,
+	LUT_ld => LUT_ld, 
+	result_ld => result_ld,
+	inc_en => inc_en,
+	loop_done => loop_done,
+	i_rst => i_rst,
+	z_ge_0 => z_ge_0,	
+	mem_read_en => mem_read_en,
+	done_o => done_o
 	);
 
 	datapath_unit: datapath
@@ -60,7 +70,7 @@ begin
 	inc_en,
 	i_rst,
 	N,	--stop=N(=15)
-	complete_tick,
+	loop_done,
 	mem_read_data,
 	LUT_addr,
 	result_o

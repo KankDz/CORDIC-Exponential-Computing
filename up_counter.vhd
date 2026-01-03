@@ -6,10 +6,10 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity up_counter is
 	port(
 	clk, rst: in std_logic;
-	inc_en: in std_logic;	--enable increase
-	stop: in  std_logic_vector(4 downto 0);		--target value
-	loop_done: out std_logic;	
-	count: out std_logic_vector(4 downto 0)		--gia tri hien tai cua counter
+	inc_en: in std_logic;	
+	stop: in  std_logic_vector(4 downto 0);		
+	z: out std_logic;	
+	count: out std_logic_vector(4 downto 0)		
 	);
 end up_counter;
 
@@ -29,7 +29,7 @@ begin
 		end if;
 	end process;
 	
-	loop_done <= '1' when temp_counter > stop else '0';
+	z <= '1' when temp_counter > stop else '0';
 	count <= temp_counter;
 
 end behav;

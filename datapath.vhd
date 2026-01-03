@@ -1,7 +1,5 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
---use IEEE.STD_LOGIC_UNSIGNED.ALL;
---use ieee.STD_LOGIC_ARITH.ALL;
 use work.lib.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
@@ -78,9 +76,6 @@ begin
 	-- compare Z greater than or equal 0 or not?
 	z_ge_0 <= '1' when (Z >= 0) else '0';
 
-	-- compare count (i) less than or equal N (15) or not?
-	--cnt_le_N <= '1' when (temp_count <= N) else '0';
-
 	-- X + Yshift
 	X_add_Yshift <= (X + Yshift);
 
@@ -104,51 +99,47 @@ begin
 
 	--Register X
 	reg_X: reg
-	port map(clk, rst, x_ld, x_src, X);
+	port map(clk => clk, rst => rst, en => x_ld, D => x_src, Q => X);
 
 	--Register Y
 	reg_Y: reg
-	port map(clk, rst, y_ld, y_src, Y);
+	port map(clk => clk, rst => rst, en => y_ld, D => y_src, Q => Y);
 
 	--Register Z
 	reg_Z: reg
-	port map(clk, rst, z_ld, z_src, Z);
+	port map(clk => clk, rst => rst, en => z_ld, D => z_src, Q => Z);
 
 	--Register X_next
 	reg_X_next: reg
-	port map(clk, rst, x_next_ld, x_next_src, x_next);
+	port map(clk => clk, rst => rst,  en => x_next_ld, D => x_next_src, Q => x_next);
 
 	--Register Y_next
 	reg_Y_next: reg
-	port map(clk, rst, y_next_ld, y_next_src, y_next);
+	port map(clk => clk, rst => rst, en => y_next_ld, D => y_next_src, Q => y_next);
 
 	--Register Z_next
 	reg_Z_next: reg
-	port map(clk, rst, z_next_ld, z_next_src, z_next);
+	port map(clk => clk, rst => rst, en => z_next_ld, D => z_next_src, Q => z_next);
 
 	--Register LUT
 	reg_LUT: reg
-	port map(clk, rst, LUT_ld, mem_read_data, LUTval);
+	port map(clk => clk, rst => rst, en => LUT_ld, D => mem_read_data, Q => LUTval);
 	
 	--Register Result
 	reg_Result: reg
-	port map(clk, rst, result_ld, X_add_Y, result_o);
+	port map(clk => clk, rst => rst, en => result_ld, D => X_add_Y, Q => result_o);
 
 	-- Up counter for i
 	up_counter_i: up_counter
-	port map(clk, i_rst, inc_en, N, loop_done, i_cnt);
+	port map(clk => clk, rst => i_rst, inc_en => inc_en, stop => N,  z => loop_done, count => i_cnt);
 
 	-- connect count to LUT_addr
 	LUT_addr <= i_cnt;
 
 	--X shift
-	--Xshift <= (X >> i_cnt);
-	--Xshift <= std_logic_vector(shift_right(signed(X), to_integer(unsigned(i_cnt))));
 	Xshift <= shift_right(X, to_integer(unsigned(i_cnt)));
 
 	--Y shift
-	--Yshift <= (Y >> i_cnt);	
-	--Yshift <= std_logic_vector( shift_right( signed(Y), to_integer(unsigned(i_cnt)) ) );
 	Yshift <= shift_right(Y, to_integer(unsigned(i_cnt)));
 
 	

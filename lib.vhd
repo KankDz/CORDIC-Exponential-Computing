@@ -8,7 +8,7 @@ package lib is
 	-- register
 	component reg is
 	port (
-	clk, clr: in std_logic;
+	clk, rst: in std_logic;
 	en: in std_logic;
 	D: in signed (15 downto 0);
 	Q: out signed (15 downto 0)
@@ -19,10 +19,10 @@ package lib is
 	component up_counter is
 	port(
 	clk, rst: in std_logic;
-	inc_en: in std_logic;	--enable
-	stop: in  std_logic_vector(4 downto 0);		--value dich
-	loop_done: out std_logic;	--flag da dat stop
-	count: out std_logic_vector(4 downto 0)		--gia tri hien tai cua counter
+	inc_en: in std_logic;	
+	stop: in  std_logic_vector(4 downto 0);	
+	z: out std_logic;	
+	count: out std_logic_vector(4 downto 0)
 	);
 	end component;
 
